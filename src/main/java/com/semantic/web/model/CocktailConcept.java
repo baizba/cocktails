@@ -6,6 +6,7 @@ public class CocktailConcept {
 
     private String preferredLabel;
     private List<String> alternativeLabels;
+    private String broaderConcept;
 
     public String getPreferredLabel() {
         return preferredLabel;
@@ -21,5 +22,13 @@ public class CocktailConcept {
 
     public void setAlternativeLabels(List<String> alternativeLabels) {
         this.alternativeLabels = alternativeLabels;
+    }
+
+    public String getBroaderConcept() {
+        return broaderConcept;
+    }
+
+    public void setBroaderConcept(String broaderConcept) {
+        this.broaderConcept = broaderConcept;
     }
 }
