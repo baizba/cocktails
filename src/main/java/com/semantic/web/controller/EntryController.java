@@ -1,8 +1,11 @@
 package com.semantic.web.controller;
 
+import com.semantic.web.exception.ConceptSaveException;
 import com.semantic.web.model.CocktailConcept;
 import com.semantic.web.service.CocktailService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class EntryController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EntryController.class);
+    private static final String ERROR_MESSAGE_SAVE = "error occurred, cocktail not added, check server log";
 
     private final CocktailService cocktailService;
 
@@ -32,12 +38,11 @@ public class EntryController {
         //insert to RDF
         try {
             cocktailService.insertConcept(cocktailConcept);
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("error occurred, cocktail not added, check server log");
+        } catch (ConceptSaveException e) {
+            LOG.error(ERROR_MESSAGE_SAVE, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR_MESSAGE_SAVE);
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("ok");
     }
 }

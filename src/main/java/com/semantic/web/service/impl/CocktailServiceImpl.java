@@ -1,6 +1,7 @@
 package com.semantic.web.service.impl;
 
 import com.semantic.web.model.CocktailConcept;
+import com.semantic.web.repository.CocktailRepository;
 import com.semantic.web.service.CocktailService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.eclipse.rdf4j.model.Model;
@@ -18,15 +19,20 @@ public class CocktailServiceImpl implements CocktailService {
     private static final String COCKTAIL_NAMESPACE_PREFIX = "ex";
     private static final String COCKTAIL_NAMESPACE_PREFIX_URL = COCKTAIL_NAMESPACE_PREFIX + ":";
 
-    @Override
-    public void insertConcept(CocktailConcept cocktailConcept) {
-        // set some namespaces
-        ModelBuilder builder = new ModelBuilder();
+
+    private final ModelBuilder builder;
+    private final CocktailRepository cocktailRepository;
+
+    public CocktailServiceImpl(CocktailRepository cocktailRepository) {
+        this.cocktailRepository = cocktailRepository;
+        builder = new ModelBuilder();
         builder.setNamespace(COCKTAIL_NAMESPACE_PREFIX, COCKTAIL_NAMESPACE)
                 .setNamespace(SKOS.NS)
                 .setNamespace(RDF.NS);
+    }
 
-        // add a new named graph to the model
+    @Override
+    public void insertConcept(CocktailConcept cocktailConcept) {
         builder.subject(COCKTAIL_NAMESPACE_PREFIX_URL + cocktailConcept.getPreferredLabel())
                 .add(RDF.TYPE, SKOS.CONCEPT)
                 .add(SKOS.PREF_LABEL, cocktailConcept.getPreferredLabel());
@@ -38,5 +44,7 @@ public class CocktailServiceImpl implements CocktailService {
         Model model = builder.build();
 
         Rio.write(model, System.out, RDFFormat.RDFXML);
+
+        cocktailRepository.saveCocktail(model);
     }
 }

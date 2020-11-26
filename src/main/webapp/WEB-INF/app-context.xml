@@ -14,4 +14,10 @@
     <context:annotation-config/>
     <context:component-scan base-package="com.semantic.web"/>
 
+    <bean id="repository" class="org.eclipse.rdf4j.repository.sail.SailRepository">
+        <constructor-arg>
+            <bean class="org.eclipse.rdf4j.sail.memory.MemoryStore"/>
+        </constructor-arg>
+    </bean>
+
 </beans>
