@@ -4,5 +4,7 @@ import com.semantic.web.model.CocktailConcept;
 
 public interface CocktailService {
 
-    void insertConcept(CocktailConcept cocktailConcept);
+    void insertConcept(final CocktailConcept cocktailConcept);
+
+    String getAllConcepts();
 }
