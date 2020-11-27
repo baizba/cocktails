@@ -6,6 +6,8 @@ import com.semantic.web.service.CocktailService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.model.Namespace;
+import org.eclipse.rdf4j.model.impl.SimpleNamespace;
 import org.eclipse.rdf4j.model.util.ModelBuilder;
 import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.SKOS;
@@ -13,27 +15,27 @@ import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.Rio;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+
 @Service("cocktailService")
 public class CocktailServiceImpl implements CocktailService {
 
-    private static final String COCKTAIL_NAMESPACE = "http://example.org/cocktail#";
     private static final String COCKTAIL_NAMESPACE_PREFIX = "ex";
+    private static final String COCKTAIL_NAMESPACE_URL = "http://example.org/cocktail#";
     private static final String COCKTAIL_NAMESPACE_PREFIX_URL = COCKTAIL_NAMESPACE_PREFIX + ":";
+    private static final Namespace COCKTAIL_NAMESPACE = new SimpleNamespace(COCKTAIL_NAMESPACE_PREFIX, COCKTAIL_NAMESPACE_URL);
 
-
-    private final ModelBuilder builder;
     private final CocktailRepository cocktailRepository;
 
     public CocktailServiceImpl(CocktailRepository cocktailRepository) {
         this.cocktailRepository = cocktailRepository;
-        builder = new ModelBuilder();
-        builder.setNamespace(COCKTAIL_NAMESPACE_PREFIX, COCKTAIL_NAMESPACE)
-                .setNamespace(SKOS.NS)
-                .setNamespace(RDF.NS);
     }
 
     @Override
-    public void insertConcept(CocktailConcept cocktailConcept) {
+    public void insertConcept(final CocktailConcept cocktailConcept) {
+        ModelBuilder builder = new ModelBuilder();
+        builder.setNamespace(COCKTAIL_NAMESPACE).setNamespace(SKOS.NS).setNamespace(RDF.NS);
+
         //add subject (cocktail), mark it as concept and set the preferred label
         builder.subject(COCKTAIL_NAMESPACE_PREFIX_URL + cocktailConcept.getPreferredLabel())
                 .add(RDF.TYPE, SKOS.CONCEPT)
@@ -53,5 +55,16 @@ public class CocktailServiceImpl implements CocktailService {
         Rio.write(model, System.out, RDFFormat.RDFXML);
 
         cocktailRepository.saveCocktail(model);
+    }
+
+    @Override
+    public String getAllConcepts() {
+        final Model model = cocktailRepository.getAllConcepts();
+        if (CollectionUtils.isEmpty(model)) {
+            return StringUtils.EMPTY;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Rio.write(model, out, RDFFormat.RDFXML);
+        return out.toString();
     }
 }
