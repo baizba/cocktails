@@ -50,4 +50,12 @@ public class EntryController {
         return ResponseEntity.ok(conceptRdfXml);
 
     }
+
+    @GetMapping(value = "/get/{preferredLabel}")
+    @ResponseBody
+    public ResponseEntity<String> getConcept(@PathVariable("preferredLabel") String preferredLabel) {
+        final String conceptRdfXml = cocktailService.getConcept(preferredLabel);
+        return ResponseEntity.ok(conceptRdfXml);
+
+    }
 }

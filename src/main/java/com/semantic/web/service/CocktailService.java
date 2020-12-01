@@ -7,4 +7,6 @@ public interface CocktailService {
     void insertConcept(final CocktailConcept cocktailConcept);
 
     String getAllConcepts();
+
+    String getConcept(final String preferredLabel);
 }

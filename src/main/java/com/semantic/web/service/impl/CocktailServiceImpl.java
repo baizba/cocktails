@@ -27,7 +27,7 @@ public class CocktailServiceImpl implements CocktailService {
 
     private final CocktailRepository cocktailRepository;
 
-    public CocktailServiceImpl(CocktailRepository cocktailRepository) {
+    public CocktailServiceImpl(final CocktailRepository cocktailRepository) {
         this.cocktailRepository = cocktailRepository;
     }
 
@@ -60,6 +60,17 @@ public class CocktailServiceImpl implements CocktailService {
     @Override
     public String getAllConcepts() {
         final Model model = cocktailRepository.getAllConcepts();
+        if (CollectionUtils.isEmpty(model)) {
+            return StringUtils.EMPTY;
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Rio.write(model, out, RDFFormat.RDFXML);
+        return out.toString();
+    }
+
+    @Override
+    public String getConcept(String preferredLabel) {
+        final Model model = cocktailRepository.getConcept(preferredLabel);
         if (CollectionUtils.isEmpty(model)) {
             return StringUtils.EMPTY;
         }

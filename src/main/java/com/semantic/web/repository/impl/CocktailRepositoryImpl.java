@@ -12,9 +12,15 @@ import org.eclipse.rdf4j.repository.util.Repositories;
 public class CocktailRepositoryImpl implements CocktailRepository {
 
     private final Repository repository;
+    private final String conceptQuery;
+    private final String allConcpetsQuery;
 
-    public CocktailRepositoryImpl(Repository repository) {
+    private static final String PREF_LABEL_PLACEHOLDER = "${prefLabel}";
+
+    public CocktailRepositoryImpl(final Repository repository, final String conceptQuery, final String allConcpetsQuery) {
         this.repository = repository;
+        this.conceptQuery = conceptQuery;
+        this.allConcpetsQuery = allConcpetsQuery;
     }
 
     @Override
@@ -28,6 +34,12 @@ public class CocktailRepositoryImpl implements CocktailRepository {
 
     @Override
     public Model getAllConcepts() {
-        return Repositories.graphQuery(repository, "CONSTRUCT WHERE {?s ?p ?o}", r -> QueryResults.asModel(r));
+        return Repositories.graphQuery(repository, allConcpetsQuery, r -> QueryResults.asModel(r));
+    }
+
+    @Override
+    public Model getConcept(final String preferredLabel) {
+        final String query = conceptQuery.replace(PREF_LABEL_PLACEHOLDER, preferredLabel);
+        return Repositories.graphQuery(repository, query, r -> QueryResults.asModel(r));
     }
 }
