@@ -11,11 +11,11 @@ import org.eclipse.rdf4j.repository.util.Repositories;
 @org.springframework.stereotype.Repository
 public class CocktailRepositoryImpl implements CocktailRepository {
 
+    private static final String PREF_LABEL_PLACEHOLDER = "${prefLabel}";
+
     private final Repository repository;
     private final String conceptQuery;
     private final String allConcpetsQuery;
-
-    private static final String PREF_LABEL_PLACEHOLDER = "${prefLabel}";
 
     public CocktailRepositoryImpl(final Repository repository, final String conceptQuery, final String allConcpetsQuery) {
         this.repository = repository;
