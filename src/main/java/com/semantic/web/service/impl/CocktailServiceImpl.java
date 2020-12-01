@@ -55,7 +55,6 @@ public class CocktailServiceImpl implements CocktailService {
         }
 
         Model model = builder.build();
-        Rio.write(model, System.out, RDFFormat.RDFXML);
 
         cocktailRepository.saveCocktail(model);
     }
