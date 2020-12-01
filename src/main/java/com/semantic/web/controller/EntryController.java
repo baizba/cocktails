@@ -4,6 +4,7 @@ import com.semantic.web.exception.ConceptSaveException;
 import com.semantic.web.model.CocktailConcept;
 import com.semantic.web.service.CocktailService;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ public class EntryController {
 
     private static final Logger LOG = LoggerFactory.getLogger(EntryController.class);
     private static final String ERROR_MESSAGE_SAVE = "error occurred, cocktail not added, check server log";
+    private static final String PLEASE_SEND_VALID_ACCEPT_HEADER_IN_THE_REQUEST = "please send valid Accept header in the request";
 
     private final CocktailService cocktailService;
 
@@ -48,6 +50,22 @@ public class EntryController {
     public ResponseEntity<String> getAllConcepts() {
         final String conceptRdfXml = cocktailService.getAllConcepts();
         return ResponseEntity.ok(conceptRdfXml);
+
+    }
+
+    @GetMapping(value = "/get/{preferredLabel}")
+    @ResponseBody
+    public ResponseEntity<String> getConcept(@PathVariable("preferredLabel") String preferredLabel, @RequestHeader("Accept") String accept) {
+        if (StringUtils.isBlank(accept)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(PLEASE_SEND_VALID_ACCEPT_HEADER_IN_THE_REQUEST);
+        }
+
+        try {
+            final String conceptRdfXml = cocktailService.getConcept(preferredLabel, accept);
+            return ResponseEntity.ok(conceptRdfXml);
+        } catch (UnsupportedRDFormatException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(PLEASE_SEND_VALID_ACCEPT_HEADER_IN_THE_REQUEST);
+        }
 
     }
 }

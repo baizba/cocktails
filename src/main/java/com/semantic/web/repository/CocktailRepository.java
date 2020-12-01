@@ -8,4 +8,6 @@ public interface CocktailRepository {
     void saveCocktail(Model model) throws ConceptSaveException;
 
     Model getAllConcepts();
+
+    Model getConcept(final String preferredLabel);
 }

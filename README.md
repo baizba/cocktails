@@ -62,3 +62,15 @@ Response example:
 
 </rdf:RDF>
 ```
+
+#### Get a single concept
+Single concept can be obtained via GET call  
+**GET** http://localhost:8080/cocktails/app/get/Mimosa  
+`Accept: application/rdf+xml` or `Accept: application/rdf+json`  
+This retrieves cocktail with preferred label "Mimosa".
+Remember that you must send Accept header with exactly one of the values above.
+This header controls if you get XML or JSON response. 
+If you send wrong header or do not send it you will get Http status 400 (bad request).
+The last part of url "Mimosa" is a preferred label of the concept (cocktail)
+For example you can replace "Mimosa" with "White Russian" if you have cocktail with 
+preferred label "White Russian".
