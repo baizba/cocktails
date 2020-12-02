@@ -31,7 +31,8 @@
                 WHERE {
                     ?c a skos:Concept ;
                     skos:prefLabel "${prefLabel}" ;
-                    skos:altLabel ?value .
+                    skos:altLabel ?value ;
+                    skos:broader ?value2 ;
                 }
             ]]></value>
         </constructor-arg>
