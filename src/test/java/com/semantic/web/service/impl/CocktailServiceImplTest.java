@@ -16,8 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Collections;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CocktailServiceImplTest {
@@ -70,6 +69,18 @@ public class CocktailServiceImplTest {
         //verify
         assertTrue(concept.contains("someLabel"));
         assertTrue(concept.contains("Cocktail1"));
+    }
+
+    @Test
+    public void testDeleteConcept() {
+        //prepare
+        doNothing().when(cocktailRepository).deleteConcept(COCKTAIL_LABEL);
+
+        //test
+        cocktailService.deleteConcept(COCKTAIL_LABEL);
+
+        //verify
+        verify(cocktailRepository).deleteConcept(COCKTAIL_LABEL);
     }
 
     private Model prepareTestModel() {

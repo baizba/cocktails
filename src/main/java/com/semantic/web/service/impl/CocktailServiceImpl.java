@@ -78,6 +78,11 @@ public class CocktailServiceImpl implements CocktailService {
         return convertRDFModelToString(rdfFormat, model);
     }
 
+    @Override
+    public void deleteConcept(final String preferredLabel) {
+        cocktailRepository.deleteConcept(preferredLabel);
+    }
+
     private String convertRDFModelToString(RDFFormat rdfFormat, Model model) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Rio.write(model, out, rdfFormat);

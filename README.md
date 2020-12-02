@@ -74,3 +74,11 @@ If you send wrong header or do not send it you will get Http status 400 (bad req
 The last part of url "Mimosa" is a preferred label of the concept (cocktail)
 For example you can replace "Mimosa" with "White Russian" if you have cocktail with 
 preferred label "White Russian".
+
+#### Delete a single concept
+Single concept can be deleted via DELETE call  
+**DELETE** http://localhost:8080/cocktails/app/delete/Mimosa  
+
+"Mimosa" is a preferred label of the cocktail (concept)
+When deletion is successful you will get http status 200. If you give non-existing
+label of the cocktail you will still get status 200 but nothing happens.

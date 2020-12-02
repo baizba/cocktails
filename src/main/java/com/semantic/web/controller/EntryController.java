@@ -1,5 +1,6 @@
 package com.semantic.web.controller;
 
+import com.semantic.web.exception.ConceptDeleteException;
 import com.semantic.web.exception.ConceptSaveException;
 import com.semantic.web.model.CocktailConcept;
 import com.semantic.web.service.CocktailService;
@@ -17,6 +18,7 @@ public class EntryController {
 
     private static final Logger LOG = LoggerFactory.getLogger(EntryController.class);
     private static final String ERROR_MESSAGE_SAVE = "error occurred, cocktail not added, check server log";
+    private static final String ERROR_MESSAGE_DELETE = "error occurred, cocktail not deleted, check server log";
     private static final String PLEASE_SEND_VALID_ACCEPT_HEADER_IN_THE_REQUEST = "please send valid Accept header in the request";
 
     private final CocktailService cocktailService;
@@ -67,5 +69,18 @@ public class EntryController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(PLEASE_SEND_VALID_ACCEPT_HEADER_IN_THE_REQUEST);
         }
 
+    }
+
+    @DeleteMapping(value = "/delete/{preferredLabel}")
+    @ResponseBody
+    public ResponseEntity<String> deleteConcept(@PathVariable String preferredLabel) {
+        try {
+            cocktailService.deleteConcept(preferredLabel);
+        } catch (ConceptDeleteException e) {
+            LOG.error(ERROR_MESSAGE_DELETE, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ERROR_MESSAGE_DELETE);
+        }
+
+        return ResponseEntity.ok("ok");
     }
 }
