@@ -9,4 +9,6 @@ public interface CocktailService {
     String getAllConcepts();
 
     String getConcept(final String preferredLabel, String accept);
+
+    void deleteConcept(final String preferredLabel);
 }
